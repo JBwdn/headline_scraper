@@ -77,15 +77,12 @@ def print_headlines(option, Titles, URLs, headline_class):
 def main(settings_path):
     # Load settings:
     titles, URLs, headline_class = load_settings(settings_path)
-    check_first = True
     while True:
         # Show available source and accept choice:
         selection = offer_options(titles)
-        if check_first is False:
-            system("cls||clear")
-        if check_first is True:
-            check_first = False
-        # Return headlines:
+        # Clear terminal (cross platform portable):
+        system("cls||clear")
+        # Return headlines from selected site:
         print_headlines(selection, titles, URLs, headline_class)
 
 
