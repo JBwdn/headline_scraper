@@ -12,7 +12,7 @@ from numpy import array
 from pandas import read_csv
 from os import system
 
-path = "~/scripts/newsites.csv"
+path = "~/scripts/newssites.csv"
 
 
 # Read websites and scraping directions from .csv file:
@@ -37,20 +37,24 @@ def _input(message, in_type=int):
 
 
 # List available websites to the user and accept their choice:
-def offer_options(title):
+def offer_options(title, URLs, last_selection):
     max = len(title)
-    for i in range(max):
-        print(i, '>', title[i])
-    choices = list(range(max))
+    for i in range(0, max):
+        print(i+1, '>', title[i])
+    choices = list(range(1, max+1))
     selection = 999
     while selection not in choices:
-        selection = _input(f"Select website 0-{str(max-1)} or (q)uit:")
+        selection = _input(f"Select website 1-{str(max)}, (0)pen or (q)uit:",)
+        # If '0' selected open website in browser:
+        if selection == 0:
+            print("Opening website...")
+            system('open '+ URLs[last_selection-1])
     return selection
 
 
 # Scrape headlines from news site and return the top 10:
 def print_headlines(option, Titles, URLs, headline_class):
-    i = int(option)
+    i = option - 1
     print("\n--- ", Titles[i], ": ---             ", URLs[i])
     r = get(str(URLs[i]))
     rraw = r.text
@@ -77,9 +81,10 @@ def print_headlines(option, Titles, URLs, headline_class):
 def main(settings_path):
     # Load settings:
     titles, URLs, headline_class = load_settings(settings_path)
+    selection = ""
     while True:
         # Show available source and accept choice:
-        selection = offer_options(titles)
+        selection = offer_options(titles, URLs, selection)
         # Clear terminal (cross platform portable):
         system("cls||clear")
         # Return headlines from selected site:
